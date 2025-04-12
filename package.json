@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "axios": "^1.8.4"
+    "axios": "^1.8.4",
+    "comment-json": "^4.2.5",
+    "json5": "^2.2.3"
   }
 }

@@ -1,4 +1,10 @@
-{
-    "title": "Hello World",
-    "description": "This is a sample description."
+﻿{
+    /* example
+    ** comments
+    */
+
+    // title
+    "title": "Hello World", // greeting
+    // description
+    "description": "This is a sample description.", // contents
 }

@@ -1,13 +1,16 @@
 const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
+const CJSON =  require('comment-json');
 
 // 🔐 API 키 불러오기
-const API_KEY = fs.readFileSync(path.join(__dirname, 'api-key.txt'), 'utf8').trim();
+const API_KEY = fs.readFileSync( path.join(__dirname, 'api-key.txt'), 'utf8').trim();
 
 // ⚙️ 설정 불러오기
 const configPath = path.join(__dirname, 'config.json');
-const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+const configObject = fs.readFileSync(configPath, 'utf8');
+const config = CJSON.parse(configObject, null);
+
 
 const API_URL = config.API_URL;
 const MODEL = config.MODEL;
@@ -31,8 +34,7 @@ function extractJsonFromMarkdown(responseText) {
 async function translateBatch(batch) {
     const batchJson = Object.fromEntries(batch);
 
-    const prompt = `${USER_PROMPT}
-    \n\n${JSON.stringify(batchJson, null, 2)}`;
+    const prompt = `${USER_PROMPT}\n\n${CJSON.stringify(batchJson, null, 4)}`;
 
     const headers = {
         'Authorization': `Bearer ${API_KEY}`,
@@ -60,7 +62,7 @@ async function translateBatch(batch) {
         // 마크다운 코드 블럭 제거
         content = extractJsonFromMarkdown(content);
 
-        return JSON.parse(content);
+        return CJSON.parse(content, null);
     } catch (err) {
         console.error('❌ 번역 실패:', err.response?.data || err.message);
         return {};
@@ -68,24 +70,27 @@ async function translateBatch(batch) {
 }
 
 async function main() {
-    console.log(API_KEY);
-
     const inputPath = './input.json';
     const outputPath = './output.json';
 
-    const inputData = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
+    const inputText = fs.readFileSync(inputPath, 'utf8');
+    const inputData = CJSON.parse(inputText, null);
+
     const entries = Object.entries(inputData);
     const chunks = chunkArray(entries, BATCH_SIZE);
-
-    let translatedData = {};
 
     for (let i = 0; i < chunks.length; i++) {
         console.log(`🔄 번역 중 (${i + 1}/${chunks.length})...`);
         const translatedChunk = await translateBatch(chunks[i]);
-        translatedData = { ...translatedData, ...translatedChunk };
+
+        // ✅ 주석 객체에 직접 덮어쓰기
+        for (const [key, value] of Object.entries(translatedChunk)) {
+            inputData[key] = value;
+        }
     }
 
-    fs.writeFileSync(outputPath, JSON.stringify(translatedData, null, 4), 'utf8');
+    // ✅ 원본 구조 그대로 저장 (주석 유지)
+    fs.writeFileSync(outputPath, CJSON.stringify(inputData, null, 4), 'utf8');
     console.log('✅ 번역 완료! output.json에 저장됨.');
 }
 
