@@ -134,3 +134,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# api키 무시
+api-key.txt
+
+# output.json 무시
+output.json

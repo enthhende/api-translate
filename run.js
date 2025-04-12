@@ -1,7 +1,9 @@
 const fs = require('fs');
 const axios = require('axios');
+const path = require('path');
 
-const API_KEY = ''; // ← 여기에 본인 API 키 입력
+// api-key.txt 파일에서 API 키 읽기
+const API_KEY = fs.readFileSync(path.join(__dirname, 'api-key.txt'), 'utf8').trim();
 const API_URL = 'https://api.perplexity.ai/chat/completions';
 const MODEL = 'sonar-pro';
 const BATCH_SIZE = 10;
