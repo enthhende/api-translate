@@ -2,15 +2,18 @@ const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
 
-// api-key.txt 파일에서 API 키 읽기
+// 🔐 API 키 불러오기
 const API_KEY = fs.readFileSync(path.join(__dirname, 'api-key.txt'), 'utf8').trim();
-const API_URL = 'https://api.perplexity.ai/chat/completions';
-const MODEL = 'sonar-pro';
-const BATCH_SIZE = 10;
-const USER_PROMPT = `Translate the following JSON to Korean. 
-    Only translate the values, keep the keys and the JSON structure unchanged. 
-    Return only valid JSON in your reply, without any explanation.`;
-const SYSTEM_PROMPT = `You are a helpful translation assistant.`;
+
+// ⚙️ 설정 불러오기
+const configPath = path.join(__dirname, 'config.json');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
+const API_URL = config.API_URL;
+const MODEL = config.MODEL;
+const BATCH_SIZE = config.BATCH_SIZE;
+const USER_PROMPT = config.USER_PROMPT;
+const SYSTEM_PROMPT = config.SYSTEM_PROMPT;
 
 function chunkArray(array, size) {
     return array.reduce((acc, _, i) =>
@@ -65,6 +68,8 @@ async function translateBatch(batch) {
 }
 
 async function main() {
+    console.log(API_KEY);
+
     const inputPath = './input.json';
     const outputPath = './output.json';
 

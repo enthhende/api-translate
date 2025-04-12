@@ -1,0 +1,7 @@
+{
+    "API_URL": "https://api.perplexity.ai/chat/completions",
+    "MODEL": "sonar-pro",
+    "BATCH_SIZE": 10,
+    "USER_PROMPT": "Translate the following JSON to Korean. Only translate the values, keep the keys and the JSON structure unchanged. Return only valid JSON in your reply, without any explanation.",
+    "SYSTEM_PROMPT": "You are a helpful translation assistant."
+  }

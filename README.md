@@ -25,9 +25,33 @@ npm install
 ```
 
 ## api key 추가
-api-key.txt 이름의 파일을 만들고 본인의 perplexity api key를 넣고 저장하거나, 윈도우 파워쉘 명령어로 다음과 같이 입력합니다.
+api-key.txt 이름의 파일을 만들고 본인의 api key를 넣고 저장합니다. txt파일 저장방식은 utf-8이어야 합니다.
+
+## config.json 편집
+"API_URL" 은 각 ai의 엔드포인트입니다.
+
+- [x] perplexity의 경우 https://api.perplexity.ai/chat/completions 입니다.
+- [ ] gpt의 경우 https://api.openai.com/v1/chat/completions 입니다.
+- [ ] Gemini 의 경우 https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent 입니다. 
+
+"MODEL" 은 각 ai의 모델명입니다.
+- [x] perplexity의 경우 sonar-pro를,
+- [ ] gpt의 경우 gpt-4o나 gpt-3.5-turbo 등 사용하시는 모델을 적으십시오.
+- [ ] Gemini 는 예시로 든 gemini-2.5-pro-preview-03-25 이외에도 여러가지가 있습니다.
+
+"BATCH_SIZE" 는 한번에 처리하는 호출 수를 말합니다. 디폴트 10으로 되어 있습니다. 만약 번역하는 json 줄이 40줄이면 대략 10번 호출을 반복해서 처리한다는 뜻입니다. 예를 들어 100줄짜리 번역파일일 경우 50으로 설정하면 2번 호출해서 처리할 수 있습니다.
+
+"USER_PROMPT" 번역시 명령 지침입니다. json 에 한국어로 번역하되, key와 json구조는 그대로 두고, 값(value)만 번역하도록 디폴트로 해두었습니다.
+
+"SYSTEM_PROMPT" 는 번역시 참조할 정보를 줄 수 있습니다. ai가 번역시 필요한 정보(번역 문서에 관한 정보나 웹사이트 링크 etc...를 자유롭게 써서 기억시키고 번역에 참고하게 만들 수 있습니다.)
+
+
 ```bash
-echo "본인의 api키" > api-key.txt
+    "API_URL": "https://api.perplexity.ai/chat/completions",
+    "MODEL": "sonar-pro",
+    "BATCH_SIZE": 10,
+    "USER_PROMPT": "TTranslate the following JSON to Korean. Only translate the values, keep the keys and the JSON structure unchanged. Keep all comments exactly as they are. Return only valid JSON in your reply, without any explanation.",
+    "SYSTEM_PROMPT": "You are a helpful translation assistant."
 ```
 
 ## 번역내용 추가
