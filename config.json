@@ -1,14 +1,16 @@
 {
-    "API_URL": "https://api.perplexity.ai/chat/completions",
-    "MODEL": "sonar-pro",
-    "BATCH_SIZE": 20,
-    "USER_PROMPT": [
-      "Translate the following JSON to Korean.",
-      "Only translate the values, keep the keys and the JSON structure unchanged.",
-      "Do not modify any comments—leave them exactly as they are. Return only valid JSON in your reply, without any explanation.",
-      "Key and value must be enclosed in double quotation marks."
-    ],
-    "SYSTEM_PROMPT": [
-      "You are a helpful translation assistant."
-    ]
+  "PROVIDER": "gemini",
+  "API_URL": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+  "MODEL": "gemini-2.0-flash",
+  "BATCH_SIZE": 20,
+  "USER_PROMPT": [
+    "Translate the following JSON to Korean.",
+    "Only translate the values, keep the keys and the JSON structure unchanged.",
+    "Do not modify any comments—leave them exactly as they are.",
+    "Return only valid JSON in your reply, without any explanation.",
+    "Key and value must be enclosed in double quotation marks."
+  ],
+  "SYSTEM_PROMPT": [
+    "You are a helpful translation assistant."
+  ]
 }

@@ -17,6 +17,7 @@ const configPath = path.join(__dirname, 'config.json');
 const configObject = fs.readFileSync(configPath, 'utf8');
 const config = CJSON.parse(configObject, null);
 
+const PROVIDER = config.PROVIDER;
 const API_URL = config.API_URL;
 const MODEL = config.MODEL;
 const BATCH_SIZE = config.BATCH_SIZE;
@@ -38,35 +39,51 @@ function extractJsonFromMarkdown(responseText) {
 
 async function translateBatch(batch) {
     const batchJson = Object.fromEntries(batch);
-
     const prompt = `${USER_PROMPT}\n\n${CJSON.stringify(batchJson, null, 4)}`;
 
-    const headers = {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json'
-    };
+    let headers, data, apiUrl;
 
-    const data = {
-        model: MODEL,
-        messages: [
-            { 
-                role: 'system', 
-                content: SYSTEM_PROMPT
-            },
-            { 
-                role: 'user', 
-                content: prompt
-            }
-        ]
-    };
+    if (config.PROVIDER === 'gemini') {
+        // ✅ Gemini용
+        apiUrl = `${API_URL}?key=${API_KEY}`;
+        headers = {
+            'Content-Type': 'application/json'
+        };
+        data = {
+            contents: [
+                {
+                    role: 'user',
+                    parts: [{ text: prompt }]
+                }
+            ]
+        };
+    } else {
+        // ✅ GPT용
+        apiUrl = API_URL;
+        headers = {
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json'
+        };
+        data = {
+            model: MODEL,
+            messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'user', content: prompt }
+            ]
+        };
+    }
 
     try {
-        const response = await axios.post(API_URL, data, { headers });
-        let content = response.data.choices?.[0]?.message?.content?.trim();
+        const response = await axios.post(apiUrl, data, { headers });
 
-        // 마크다운 코드 블럭 제거
+        let content;
+        if (config.PROVIDER === 'gemini') {
+            content = response.data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        } else {
+            content = response.data.choices?.[0]?.message?.content?.trim();
+        }
+
         content = extractJsonFromMarkdown(content);
-
         return CJSON.parse(content, null);
     } catch (err) {
         console.error('❌ 번역 실패:', err.response?.data || err.message);
