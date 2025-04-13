@@ -95,7 +95,7 @@ async function main() {
     for (let i = 0; i < chunks.length; i++) {
         console.log(`🔄 번역 중 (${i + 1}/${chunks.length})...`);
         const translatedChunk = await translateBatch(chunks[i]);
-        // console.log('✅ 번역 결과:', translatedChunk);
+        console.log('✅ 번역 결과:', translatedChunk);
         Object.assign(translatedMap, translatedChunk);
     }
 
@@ -106,7 +106,8 @@ async function main() {
     }
 
     // 🔄 줄마다 키가 있는 경우 value만 교체
-    const keyValueRegex = /^(\s*)"([^"]+)"\s*:\s*"([^"]*)"\s*(,?)\s*(\/\/.*)?$/;
+    const keyValueRegex = /^(\s*)"([^"]+)"\s*:\s*"((?:[^"\\]|\\.)*)"\s*(,?)\s*(\/\/.*)?$/;
+
 
     const updatedLines = lines.map(line => {
         const match = line.match(keyValueRegex);
