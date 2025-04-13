@@ -1,9 +1,9 @@
 # api-translate
-perplexity ai api를 이용해서 json파일을 한글로 번역하는 nodejs 프로그램입니다.
+ai api를 이용해서 json파일을 한글로 번역하는 nodejs 프로그램입니다.
 
 nodejs 설치하고 node 실행이 가능해야 합니다.
 
-perplexity api key가 필요합니다.
+ai 모델의 api key가 필요합니다.
 api-key.txt 파일을 읽어서 실행됩니다.
 
 ## 내려받기
