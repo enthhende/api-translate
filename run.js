@@ -4,6 +4,11 @@ const path = require('path');
 const CJSON =  require('comment-json');
 const os = require('os'); // ✅ 운영체제 개행 문자 처리용
 
+// ✅ 프롬프트 배열을 공백으로 이어붙이는 유틸 함수
+function joinPrompt(prompt) {
+    return Array.isArray(prompt) ? prompt.join(' ') : prompt;
+}
+
 // 🔐 API 키 불러오기
 const API_KEY = fs.readFileSync( path.join(__dirname, 'api-key.txt'), 'utf8').trim();
 
@@ -12,12 +17,11 @@ const configPath = path.join(__dirname, 'config.json');
 const configObject = fs.readFileSync(configPath, 'utf8');
 const config = CJSON.parse(configObject, null);
 
-
 const API_URL = config.API_URL;
 const MODEL = config.MODEL;
 const BATCH_SIZE = config.BATCH_SIZE;
-const USER_PROMPT = config.USER_PROMPT;
-const SYSTEM_PROMPT = config.SYSTEM_PROMPT;
+const USER_PROMPT = joinPrompt(config.USER_PROMPT);
+const SYSTEM_PROMPT = joinPrompt(config.SYSTEM_PROMPT);
 
 function chunkArray(array, size) {
     return array.reduce((acc, _, i) =>
