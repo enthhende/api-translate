@@ -95,7 +95,7 @@ async function main() {
     for (let i = 0; i < chunks.length; i++) {
         console.log(`🔄 번역 중 (${i + 1}/${chunks.length})...`);
         const translatedChunk = await translateBatch(chunks[i]);
-        console.log('✅ 번역 결과:', translatedChunk);
+        // console.log('✅ 번역 결과:', translatedChunk);
         Object.assign(translatedMap, translatedChunk);
     }
 
